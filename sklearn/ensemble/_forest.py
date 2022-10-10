@@ -739,9 +739,15 @@ class ForestClassifier(ClassifierMixin, BaseForest, metaclass=ABCMeta):
         if self.oob_decision_function_.shape[-1] == 1:
             # drop the n_outputs axis if there is a single output
             self.oob_decision_function_ = self.oob_decision_function_.squeeze(axis=-1)
-        self.oob_score_ = accuracy_score(
-            y, np.argmax(self.oob_decision_function_, axis=1)
+        
+        from sklearn.metrics import fbeta_score 
+
+        self.oob_score_ = fbeta_score(
+            y, np.argmax(self.oob_decision_function_, axis=1), beta=2
         )
+        # self.oob_score_ = accuracy_score(
+        #     y, np.argmax(self.oob_decision_function_, axis=1)
+        # ) ###
 
     def _validate_y_class_weight(self, y):
         check_classification_targets(y)
